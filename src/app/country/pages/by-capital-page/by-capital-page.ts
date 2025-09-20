@@ -8,4 +8,7 @@ import { Component } from '@angular/core';
 })
 export class ByCapitalPage {
 
+  onSearch(value:string){
+    console.log(value);
+  }
 }
