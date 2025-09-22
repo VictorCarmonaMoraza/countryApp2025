@@ -25,11 +25,17 @@ export class ByCapitalPage {
     this.isError.set(null);
 
     this.#countryService.searchByCapital(query)
-      .subscribe((resp) => {
-        this.isLoading.set(false);
-        this.countries.set(resp);
-
-
+      .subscribe({
+        next: (countries) => {
+          this.isLoading.set(false);
+          this.countries.set(countries);
+        },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        error:(err)=>{
+          this.isLoading.set(false);
+          this.countries.set([]);
+          this.isError.set(`${err}`)
+        }
       })
     console.log(query)
   }

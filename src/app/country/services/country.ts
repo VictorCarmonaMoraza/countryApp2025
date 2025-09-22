@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { RESTCountryModel } from '../interfaces/rest-countries.interface';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import type { CountryI } from '../interfaces/country.interface';
 import { CountryMapper } from '../components/mappers/country.mapper';
 
@@ -24,17 +24,29 @@ export class Country {
     query = query.toLowerCase();
 
     return this.http.get<RESTCountryModel.RESTCountry[]>(`${API_URL}/capital/${query}`)
-         .pipe(
-        map( (resp)=>CountryMapper.mapRestCountryToCountryArray(resp))
+      .pipe(
+        map((resp) => CountryMapper.mapRestCountryToCountryArray(resp)),
+        catchError(error => {
+          console.log('Error fetching', error)
+
+          return throwError(
+            ()=> new Error(`No se pudo obtener paises con ese query ${query}`)
+          )
+        })
       );
   }
 
-  searchByCountry(query: string) {
-    query = query.toLowerCase();
 
-    return this.http.get<RESTCountryModel.RESTCountry[]>(`${API_URL}/name/${query}`);
 
-  }
+
+
+
+  // searchByCountry(query: string) {
+  //   query = query.toLowerCase();
+
+  //   return this.http.get<RESTCountryModel.RESTCountry[]>(`${API_URL}/name/${query}`);
+
+  // }
 
 
 }
