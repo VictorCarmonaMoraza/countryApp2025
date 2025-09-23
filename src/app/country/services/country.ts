@@ -37,7 +37,22 @@ export class Country {
       );
   }
 
+  searchByCapitalByAlphaCode(code: string){
+    const url = `${API_URL}/alpha/${code}`
 
+    return this.http.get<RESTCountryModel.RESTCountry[]>(url)
+      .pipe(
+        map((resp) => CountryMapper.mapRestCountryToCountryArray(resp)),
+        map(countries=>countries.at(0)),
+        catchError(error => {
+          console.log('Error fetching', error)
+
+          return throwError(
+            ()=> new Error(`No se pudo obtener paises con ese codigo ${code}`)
+          )
+        })
+      );
+  }
 
 
 
