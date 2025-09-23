@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { RESTCountryModel } from '../interfaces/rest-countries.interface';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, delay, map, Observable, throwError } from 'rxjs';
 import type { CountryI } from '../interfaces/country.interface';
 import { CountryMapper } from '../components/mappers/country.mapper';
 
@@ -26,6 +26,7 @@ export class Country {
     return this.http.get<RESTCountryModel.RESTCountry[]>(`${API_URL}/capital/${query}`)
       .pipe(
         map((resp) => CountryMapper.mapRestCountryToCountryArray(resp)),
+        delay(3000),
         catchError(error => {
           console.log('Error fetching', error)
 
