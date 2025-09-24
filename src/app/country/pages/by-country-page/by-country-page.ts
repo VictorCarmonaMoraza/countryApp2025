@@ -1,10 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
-import { SearchInput } from "../../components/search-input/search-input";
-import { Country } from '../../services/country';
-import { CountryI } from '../../interfaces/country.interface';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 import { CountryList } from "../../components/country-list/country-list";
+import { SearchInput } from "../../components/search-input/search-input";
+import { CountryI } from '../../interfaces/country.interface';
+import { Country } from '../../services/country';
 
 @Component({
   selector: 'app-by-country-page',
@@ -13,6 +13,7 @@ import { CountryList } from "../../components/country-list/country-list";
   styleUrl: './by-country-page.css'
 })
 export class ByCountryPage {
+
   readonly #countryService = inject(Country)
   query = signal('')
 
@@ -27,6 +28,10 @@ export class ByCountryPage {
       return this.#countryService.searchByCapital(params.query);
     },
   });
+
+
+
+
 }
 
 
