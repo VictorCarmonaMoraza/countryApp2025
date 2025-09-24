@@ -7,7 +7,7 @@ export class CountryMapper {
   static mapRestCountryToCountry(restCountry: RESTCountryModel.RESTCountry): CountryI {
     return {
       capital: restCountry.capital.join(','),
-      cca2: restCountry.flag,
+      cca2: restCountry.cca2,
       flag: restCountry.flag,
       flagSvg: restCountry.flags.svg,
       name: restCountry.translations['spa'].common ?? 'No Spanish Name',

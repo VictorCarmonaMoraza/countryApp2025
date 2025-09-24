@@ -4,7 +4,7 @@
 } @if(countryResource.isLoading()){
   <h1 class="text-3xl">Cargando</h1>
 }
-
+<pre>{{ countryResource.value() | json }}</pre>
  @if(countryResource.hasValue()){
   <app-country-information [country]="countryResource.value()!" />
 }

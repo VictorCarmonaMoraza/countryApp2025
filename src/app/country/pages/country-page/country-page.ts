@@ -4,10 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { Country } from '../../services/country';
 import { NotFound } from "../../../shared/components/not-found/not-found";
 import { CountryInformation } from "../country-information/country-information";
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-country-page',
-  imports: [NotFound, CountryInformation],
+  imports: [NotFound, CountryInformation, JsonPipe],
   templateUrl: './country-page.html',
   styleUrl: './country-page.css'
 })
