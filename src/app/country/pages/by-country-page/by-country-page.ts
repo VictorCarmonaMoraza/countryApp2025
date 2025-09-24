@@ -25,7 +25,7 @@ export class ByCountryPage {
       if (!params.query) {
         return of([]); //Devuelve un observable que tiene un array vacio
       }
-      return this.#countryService.searchByCapital(params.query);
+      return this.#countryService.searchByCountry(params.query);
     },
   });
 
