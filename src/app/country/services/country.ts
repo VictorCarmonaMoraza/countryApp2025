@@ -4,6 +4,7 @@ import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 import { CountryMapper } from '../components/mappers/country.mapper';
 import type { CountryI } from '../interfaces/country.interface';
 import { RESTCountryModel } from '../interfaces/rest-countries.interface';
+import { Region } from '../interfaces/region.type';
 
 
 const API_URL = 'https://restcountries.com/v3.1';
@@ -16,6 +17,7 @@ export class Country {
   readonly #http = inject(HttpClient)
   readonly #queryCacheCapital = new Map<string, CountryI[]>();
   readonly #queryCacheCountry = new Map<string, CountryI[]>();
+  readonly #queryCacheRegion= new Map<Region, CountryI[]>();
 
   /**
    *
@@ -60,9 +62,6 @@ export class Country {
       );
   }
 
-
-
-
   searchByCountry(query: string) {
     query = query.toLowerCase();
 
@@ -82,8 +81,27 @@ export class Country {
           )
         })
       );
-
   }
 
+    searchByRegion(region: Region) {
+      const url = `${API_URL}/region/${region}`;
+
+    if (this.#queryCacheRegion.has(region)) {
+      return of(this.#queryCacheRegion.get(region) ?? []).pipe(delay(5000));
+    }
+
+    return this.#http.get<RESTCountryModel.RESTCountry[]>(url)
+      .pipe(
+        map((resp) => CountryMapper.mapRestCountryToCountryArray(resp)),
+        tap(countries => this.#queryCacheRegion.set(region, countries)),
+        catchError(error => {
+          console.log('Error fetching', error)
+
+          return throwError(
+            () => new Error(`No se pudo obtener paises con ese query ${region}`)
+          )
+        })
+      );
+  }
 
 }
