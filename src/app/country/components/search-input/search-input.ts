@@ -1,5 +1,5 @@
 
-import { Component, effect, input, output, signal } from '@angular/core';
+import { Component, effect, input, linkedSignal, output } from '@angular/core';
 
 @Component({
   selector: 'country-search-input',
@@ -10,10 +10,11 @@ import { Component, effect, input, output, signal } from '@angular/core';
 export class SearchInput {
 
   value = output<string>();
-  placeholder = input('Buscar')
-  debounceTime =input(300)
+  placeholder = input('Buscar');
+  debounceTime = input(300);
+  initialValue = input<string>('');
 
-  inputValue = signal<string>('');
+  inputValue = linkedSignal<string>(() => this.initialValue() ?? '');
 
   debounceEffect = effect((onCleanup) => {
     const value = this.inputValue();
@@ -22,7 +23,7 @@ export class SearchInput {
       this.value.emit(value)
     }, this.debounceTime());
 
-    onCleanup(()=>{
+    onCleanup(() => {
       clearTimeout(timeout)
     })
   })

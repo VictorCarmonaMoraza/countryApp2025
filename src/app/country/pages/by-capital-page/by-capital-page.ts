@@ -1,5 +1,6 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, inject, linkedSignal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { CountryList } from "../../components/country-list/country-list";
 import { SearchInput } from "../../components/search-input/search-input";
@@ -13,13 +14,16 @@ import { Country } from '../../services/country';
   styleUrl: './by-capital-page.css'
 })
 export class ByCapitalPage {
-
   readonly #countryService = inject(Country)
-  query = signal('')
+  //Informacion de la ruta activa
+  activatedRoute = inject(ActivatedRoute);
+  //Lo que el usurio habia buscado
+  queryParam = this.activatedRoute.snapshot.queryParamMap.get('query') ?? '';
+  query = linkedSignal(() => this.queryParam);
 
   constructor() {
     effect(() => {
-      const countries = this.countryResource.value(); // 👈 importante, con ()
+      const countries = this.countryResource.value();
       console.log('Countries:', countries);
 
       if (countries && countries.length > 0) {
@@ -31,21 +35,22 @@ export class ByCapitalPage {
         });
       }
     });
-
-
   }
 
+  /**
+   * Obtenemos el recurso
+   */
   countryResource = rxResource<CountryI[], { query: string }>({
     params: () => ({
       query: this.query()
     }),
     stream: ({ params }) => {
+      console.log({ query: params.query });
       if (!params.query) {
         return of([]); //Devuelve un observable que tiene un array vacio
       }
       return this.#countryService.searchByCapital(params.query);
     },
   });
-
 
 }
