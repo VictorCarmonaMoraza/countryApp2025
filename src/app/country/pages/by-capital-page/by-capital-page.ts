@@ -20,7 +20,7 @@ export class ByCapitalPage {
   readonly #router = inject(Router)
 
   //Lo que el usurio habia buscado
-  queryParam = this.#activatedRoute.snapshot.queryParamMap.get('query') ?? '';
+  queryParam = this.#activatedRoute.snapshot.queryParamMap.get('capital') ?? '';
   query = linkedSignal(() => this.queryParam);
 
   constructor() {
@@ -42,25 +42,25 @@ export class ByCapitalPage {
   /**
    * Obtenemos el recurso
    */
-  countryResource = rxResource<CountryI[], { query: string }>({
+  countryResource = rxResource<CountryI[], { capital: string }>({
     params: () => ({
-      query: this.query()
+      capital: this.query()
     }),
     stream: ({ params }) => {
-      console.log({ query: params.query });
-      if (!params.query) {
+      console.log({ query: params.capital });
+      if (!params.capital) {
         return of([]); //Devuelve un observable que tiene un array vacio
       }
 
       //Actualizamo la url
       this.#router.navigate(['/country/by-capital'], {
         queryParams: {
-          query: params.query,
+          capital: params.capital,
           hola: 'Victor',
           doc: 'VictorWeb'
         }
       })
-      return this.#countryService.searchByCapital(params.query);
+      return this.#countryService.searchByCapital(params.capital);
     },
   });
 

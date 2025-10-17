@@ -20,27 +20,27 @@ export class ByCountryPage {
   readonly #router = inject(Router)
 
   //Lo que el usurio habia buscado
-  queryParam = this.#activatedRoute.snapshot.queryParamMap.get('query') ?? '';
+  queryParam = this.#activatedRoute.snapshot.queryParamMap.get('country') ?? '';
   query = linkedSignal(() => this.queryParam);
 
 
-  countryResource = rxResource<CountryI[], { query: string }>({
+  countryResource = rxResource<CountryI[], { country: string }>({
     params: () => ({
-      query: this.query()
+      country: this.query()
     }),
     stream: ({ params }) => {
-      if (!params.query) {
+      if (!params.country) {
         return of([]); //Devuelve un observable que tiene un array vacio
       }
       //Actualizamo la url
       this.#router.navigate(['/country/by-country'], {
         queryParams: {
-          query: params.query,
+          country: params.country,
           hola: 'Victor',
           doc: 'VictorWeb'
         }
       })
-      return this.#countryService.searchByCountry(params.query);
+      return this.#countryService.searchByCountry(params.country);
     },
   });
 
