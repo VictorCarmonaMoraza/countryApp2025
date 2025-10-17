@@ -37,7 +37,7 @@ export class ByRegionPage {
   readonly #activatedRoute = inject(ActivatedRoute);
 
   //Lo que el usurio habia buscado
-  queryParam = (this.#activatedRoute.snapshot.queryParamMap.get('region') ?? '') as Region;
+  queryParam = this.#activatedRoute.snapshot.queryParamMap.get('region') ?? '';
   // query = linkedSignal(() => this.queryParam);
 
   public regions: Region[] = [
@@ -49,7 +49,7 @@ export class ByRegionPage {
     'Antarctic',
   ];
 
-  selectedRegion = linkedSignal<Region | null>(() => this.queryParam ?? 'Americas');
+  selectedRegion = linkedSignal<Region | null>(() => validateQueryParam(this.queryParam));
 
   selectRegion(region: Region) {
     this.selectedRegion.set(region);
