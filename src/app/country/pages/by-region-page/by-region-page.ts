@@ -7,6 +7,23 @@ import { CountryI } from '../../interfaces/country.interface';
 import { Region } from '../../interfaces/region.type';
 import { Country } from '../../services/country';
 
+
+
+function validateQueryParam(queryParam: string): Region {
+
+  queryParam = queryParam.toLowerCase();
+  const validRegion: Record<string, Region> = {
+    'africa': 'Africa',
+    'americas': 'Americas',
+    'asia': 'Asia',
+    'europe': 'Europe',
+    'oceania': 'Oceania',
+    'antarctic': 'Antarctic',
+  };
+
+  return validRegion[queryParam as keyof typeof validRegion] ?? 'Americas';
+};
+
 @Component({
   selector: 'app-by-region-page',
   imports: [CountryList],
