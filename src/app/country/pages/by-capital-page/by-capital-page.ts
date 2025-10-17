@@ -1,6 +1,6 @@
 import { Component, effect, inject, linkedSignal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { CountryList } from "../../components/country-list/country-list";
 import { SearchInput } from "../../components/search-input/search-input";
@@ -16,9 +16,11 @@ import { Country } from '../../services/country';
 export class ByCapitalPage {
   readonly #countryService = inject(Country)
   //Informacion de la ruta activa
-  activatedRoute = inject(ActivatedRoute);
+  readonly #activatedRoute = inject(ActivatedRoute);
+  readonly #router = inject(Router)
+
   //Lo que el usurio habia buscado
-  queryParam = this.activatedRoute.snapshot.queryParamMap.get('query') ?? '';
+  queryParam = this.#activatedRoute.snapshot.queryParamMap.get('query') ?? '';
   query = linkedSignal(() => this.queryParam);
 
   constructor() {
@@ -49,6 +51,15 @@ export class ByCapitalPage {
       if (!params.query) {
         return of([]); //Devuelve un observable que tiene un array vacio
       }
+
+      //Actualizamo la url
+      this.#router.navigate(['/country/by-capital'], {
+        queryParams: {
+          query: params.query,
+          hola: 'Victor',
+          doc: 'VictorWeb'
+        }
+      })
       return this.#countryService.searchByCapital(params.query);
     },
   });

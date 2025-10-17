@@ -1,5 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, linkedSignal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { CountryList } from "../../components/country-list/country-list";
 import { CountryI } from '../../interfaces/country.interface';
@@ -13,8 +14,14 @@ import { Country } from '../../services/country';
   styleUrl: './by-region-page.css'
 })
 export class ByRegionPage {
-
   readonly #countryService = inject(Country);
+  readonly #router = inject(Router);
+  //Informacion de la ruta activa
+  readonly #activatedRoute = inject(ActivatedRoute);
+
+  //Lo que el usurio habia buscado
+  queryParam = (this.#activatedRoute.snapshot.queryParamMap.get('region') ?? '') as Region;
+  // query = linkedSignal(() => this.queryParam);
 
   public regions: Region[] = [
     'Africa',
@@ -25,13 +32,13 @@ export class ByRegionPage {
     'Antarctic',
   ];
 
-  selectedRegion = signal<Region | null>(null);
+  selectedRegion = linkedSignal<Region | null>(() => this.queryParam ?? 'Americas');
 
   selectRegion(region: Region) {
     this.selectedRegion.set(region);
   }
 
-    regionResource = rxResource<CountryI[], { region: Region | null }>({
+  regionResource = rxResource<CountryI[], { region: Region | null }>({
     params: () => ({
       region: this.selectedRegion()
     }),
@@ -39,6 +46,14 @@ export class ByRegionPage {
       if (!params.region) {
         return of([]); //Devuelve un observable que tiene un array vacio
       }
+      //Actualizamo la url
+      this.#router.navigate(['/country/by-region'], {
+        queryParams: {
+          region: params.region,
+          hola: 'Victor',
+          doc: 'VictorWeb'
+        }
+      })
       return this.#countryService.searchByRegion(params.region);
     },
   });
